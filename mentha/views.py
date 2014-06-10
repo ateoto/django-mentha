@@ -1,6 +1,9 @@
 import logging
-from django.views.generic.base import TemplateView
 
+from django.views.generic.base import TemplateView
+from django.views.generic.edit import FormView
+
+from .forms import UploadTransactionForm
 
 logger = logging.getLogger('dev.console')
 
@@ -12,3 +15,11 @@ class HomeView(TemplateView):
         logger.info('This is all here for an example.')
 
         return context
+
+class UploadTransactionView(FormView):
+    template_name = 'mentha/transaction_upload.html'
+    form_class = UploadTransactionForm
+
+    def form_valid(self, form):
+        form.process_transactions()
+        return super(UploadTransactionView, self).form_valid(form)

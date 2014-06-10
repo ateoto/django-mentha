@@ -25,6 +25,7 @@ EXTERNAL_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
     'django.contrib.sites',
+    'crispy_forms',
 ]
 
 INTERNAL_APPS = [
@@ -82,6 +83,8 @@ MEDIA_ROOT = os.path.join(APP_ROOT.parent, 'app_media')
 TEMPLATE_DIRS = (
     Path(APP_ROOT + 'templates'),
 )
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 LOGGING = {
     'version': 1,

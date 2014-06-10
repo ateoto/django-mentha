@@ -1,6 +1,7 @@
 # Dev
 db.sqlite
-glair/app_media
+mentha/app_media
+mentha/app_static
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

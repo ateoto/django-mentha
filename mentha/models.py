@@ -1,11 +1,18 @@
+import logging
+
 from django.db import models
 from django.conf import settings
 from django.template.defaultfilters import slugify
 from django.utils.encoding import python_2_unicode_compatible
 from django.core.urlresolvers import reverse
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 
 from datetime import date, datetime
 from decimal import Decimal
+
+
+logger = logging.getLogger('dev.console')
 
 class Account(models.Model):
     name = models.CharField(max_length=50)
@@ -50,12 +57,6 @@ class Payee(models.Model):
 
 class TransactionManager(models.Manager):
     def create_from_csv(self, account, csv_string):
-        """
-        03/03/2014,-340.00,,PAYPAL INST XFER J222222F2ASN2
-        03/03/2014,-18.99,14062001,7411 NHL INTERACTIVE CYBE866-210-6349 NY 14062001
-        03/03/2014,-15.40,14062002,7411 Amazon Web Services aws.amazon.c WA 14062002
-        03/07/2014,428.37,,STARBUCKS CORP IL 01719891
-        """
         parts = csv_string.split(',')
 
         t_datetime = datetime.strptime(parts[0], '%m/%d/%Y')
@@ -120,3 +121,14 @@ class Transaction(models.Model):
         self.account.save()
 
         super(Transaction, self).save(*args, **kwargs)
+
+
+@receiver(pre_delete, sender=Transaction)
+def transaction_pre_delete(sender, **kwargs):
+    transaction = kwargs['instance']
+
+    if transaction.transaction_type == 0:
+        transaction.account.balance += transaction.amount
+    else:
+        transaction.account.balance -= transaction.amount
+    transaction.account.save()

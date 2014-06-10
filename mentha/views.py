@@ -4,6 +4,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 
 from .forms import UploadTransactionForm
+from .models import Account
 
 logger = logging.getLogger('dev.console')
 
@@ -21,5 +22,7 @@ class UploadTransactionView(FormView):
     form_class = UploadTransactionForm
 
     def form_valid(self, form):
+        logger.info(form.cleaned_data['account'])
         form.process_transactions()
+        logger.info(form.cleaned_data['account'])
         return super(UploadTransactionView, self).form_valid(form)

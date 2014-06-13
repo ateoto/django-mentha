@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = patterns('',
 	url(r'^mentha/', include('mentha.urls')),
     url(r'^admin/', include(admin.site.urls)),

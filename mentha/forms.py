@@ -18,6 +18,4 @@ class UploadTransactionForm(forms.Form):
 
     def process_transactions(self):
         account = self.cleaned_data['account']
-
-        for csv_line in self.cleaned_data['transaction_file']:
-            Transaction.objects.create_from_csv(account, csv_line)
+        account.load_transactions_from_file(self.cleaned_data['transaction_file'])
